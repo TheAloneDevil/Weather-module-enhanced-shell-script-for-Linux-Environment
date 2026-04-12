@@ -1,5 +1,11 @@
 # Enhanced Weather Module for Linux Desktop
 
+![Weather Module](Screenshots/2.png)
+
+<p align="center">
+<img src="Screenshots/3.png" width="45%">
+</p>
+
 This package provides an enhanced weather module for Linux desktop.
 
 ## Files Included
