@@ -70,7 +70,7 @@ Edit user_modules.ini - change ~/YourPath/ to your path.
 ## Requirements
 
 - Linux desktop
-- curl
+- curl (command-line tool for APIs - usually pre-installed)
 - OpenWeatherMap API key (free)
 
 ---
