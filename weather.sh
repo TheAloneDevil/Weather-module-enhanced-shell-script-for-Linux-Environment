@@ -116,7 +116,7 @@ get_icon_color() {
         01d) echo "#F98006" ;;  # Sun - orange
         01n) echo "#87CEEB" ;;  # Moon - light blue
         02d) echo "#CC9900" ;;  # Few clouds day - Orangish Yellow
-        02n) echo "#004D99" ;;  # Few clouds night -
+        02n) echo "#3C3C5D" ;;  # Few clouds night - Purple
         03*) echo "#CFD8DC" ;;  # Scattered clouds - light gray
         04*) echo "#B0BEC5" ;;  # Broken/overcast - lighter gray
         09*) echo "#29B6F6" ;;  # Shower rain - vibrant light blue
