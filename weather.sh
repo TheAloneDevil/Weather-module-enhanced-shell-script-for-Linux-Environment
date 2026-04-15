@@ -68,8 +68,8 @@ get_icon() {
         01n) icon="%{T17}%{T-}%{T9} %{T-}" ;;  # Moon (fa-moon-o)
         
         # Few clouds
-        02d) icon="%{T18}%{T-} " ;;  # Cloud sun (fa-cloud)
-        02n) icon="%{T18}%{T-} " ;;  # Cloud moon (fa-cloud)
+        02d) icon="%{T33}%{T-} " ;;  # Cloud sun (fa-cloud)
+        02n) icon="%{T33}%{T-} " ;;  # Cloud moon (fa-cloud)
         
         # Scattered clouds
         03d) icon="%{T18}%{T-} " ;;  # Cloud (fa-cloud)
