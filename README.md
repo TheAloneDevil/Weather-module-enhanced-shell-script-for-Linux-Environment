@@ -23,6 +23,12 @@ This package provides an enhanced weather module for Linux desktop.
 - Moon phase detection (full moon)
 - 30-minute update interval
 - Caching
+- fetch_weather - timeout & user-agent added
+- Fallback JSON parsing - fixed for single-line
+- Output - only icon has color
+- get_temp_color - removed
+- refresh functionality - added
+- JUST_REFRESHED logic - added
 
 ---
 
