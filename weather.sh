@@ -1,12 +1,11 @@
 #!/bin/bash
-
 # Polybar Weather Module
 # Fetches weather data from OpenWeatherMap API
 # Based on reference: https://github.com/kijimoshi1337/Regulus-Spotify/tree/main/scripts
 
 # Configuration - User needs to set these values
-CITY_ID="XXXXXXX"  # Desired City
-API_KEY="dafacXXXXXXXXXXXXXX"  # Get from https://home.openweathermap.org/api_keys
+CITY_ID="XXXXXXX"  # City, State, Country
+API_KEY="dafac2133433c1e66XXXXXXXXXXXXXXX"  # Get from https://home.openweathermap.org/api_keys
 UNITS="metric"          # metric/imperial
 LANG="en"              # Language code
 
@@ -40,7 +39,6 @@ get_moon_phase() {
     
     echo "$days_into_cycle"
 }
-
 # Check if today is full moon (day 14-15 of cycle)
 is_full_moon() {
     local phase=$(get_moon_phase)
@@ -49,7 +47,6 @@ is_full_moon() {
     fi
     return 1  # False
 }
-
 # Weather icons based on OpenWeatherMap condition codes
 # Using Font Awesome icons for better compatibility
 get_icon() {
@@ -109,7 +106,6 @@ get_icon() {
     esac
     echo "$icon"
 }
-
 get_icon_color() {
     local condition=$1
     case $condition in
@@ -128,33 +124,20 @@ get_icon_color() {
         *) echo "" ;;
     esac
 }
-
-get_temp_color() {
-    local temp=$1
-    if [ "$temp" -lt 15 ]; then
-        echo "#4fc3f7"  # Cold - blue
-    elif [ "$temp" -gt 40 ]; then
-        echo "#ff7043"  # Hot - sweet orange
-    else
-        echo ""  # Mild - no color
-    fi
-}
-
 # Fetch weather data
 fetch_weather() {
     local url="https://api.openweathermap.org/data/2.5/weather?id=${CITY_ID}&appid=${API_KEY}&units=${UNITS}&lang=${LANG}"
-    curl -s "$url" -o "$CACHE_FILE" 2>/dev/null
+    curl -s --connect-timeout 10 --max-time 30 -H "User-Agent: polybar-weather" "$url" -o "$CACHE_FILE"
     if [ $? -ne 0 ] || [ ! -s "$CACHE_FILE" ]; then
         echo '{"error": "Failed to fetch"}' > "$CACHE_FILE"
     fi
 }
-
 # Display weather
 display_weather() {
-    # Check if cache is stale
+    # Check if cache is stale (skip if just refreshed)
     if [ ! -f "$CACHE_FILE" ]; then
         fetch_weather
-    else
+    elif [ "$JUST_REFRESHED" != "1" ]; then
         local cache_age=$(($(date +%s) - $(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)))
         if [ "$cache_age" -gt "$CACHE_DURATION" ]; then
             fetch_weather
@@ -177,10 +160,10 @@ display_weather() {
         icon_code=$(jq -r '.weather[0].icon' "$CACHE_FILE" 2>/dev/null)
         description=$(jq -r '.weather[0].description' "$CACHE_FILE" 2>/dev/null)
     else
-        # Fallback parsing with grep/sed
-        temp=$(grep '"feels_like"' "$CACHE_FILE" | head -1 | sed 's/.*"feels_like":\([0-9.-]*\).*/\1/')
-        icon_code=$(grep '"icon"' "$CACHE_FILE" | head -1 | sed 's/.*"icon":"\([^"]*\)".*/\1/')
-        description=$(grep '"description"' "$CACHE_FILE" | head -1 | sed 's/.*"description":"\([^"]*\)".*/\1/')
+        # Fallback parsing with grep/sed (for single-line JSON)
+        temp=$(grep -o '"feels_like":[0-9.-]*' "$CACHE_FILE" | sed 's/"feels_like"://')
+        icon_code=$(grep -o '"icon":"[^"]*"' "$CACHE_FILE" | head -1 | sed 's/"icon":"//;s/"//')
+        description=$(grep -o '"description":"[^"]*"' "$CACHE_FILE" | head -1 | sed 's/"description":"//;s/"//')
     fi
     
     # Validate data
@@ -196,12 +179,22 @@ display_weather() {
     
     # Get icon and color
     local icon=$(get_icon "$icon_code")
-    local temp_color=$(get_temp_color "$temp_int")
     local icon_color=$(get_icon_color "$icon_code")
     
-    # Output - icon with its own font, text with its own color
-    echo "%{F${icon_color}}${icon}%{F-}%{F${temp_color}} ${temp_int}${unit_symbol}, ${description}%{F-}"
+    # Output - icon with its own font and color, temp/desc plain
+    local output="${icon}"
+    
+    if [ -n "$icon_color" ]; then
+        output="%{F${icon_color}}${icon}%{F-}"
+    fi
+    
+    output+=" ${temp_int}${unit_symbol}, ${description}"
+    printf "%s\n" "$output"
 }
-
 # Main
+JUST_REFRESHED=0
+if [ "$1" = "refresh" ]; then
+    fetch_weather
+    JUST_REFRESHED=1
+fi
 display_weather
