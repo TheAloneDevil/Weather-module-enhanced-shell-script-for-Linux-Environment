@@ -1,4 +1,4 @@
-# Enhanced Weather Module for Linux Desktop
+# Enhanced Weather Module for Linux Desktop ( Shell-Script )
 
 ![Weather Module](Screenshots/2.png)
 
