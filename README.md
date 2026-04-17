@@ -74,11 +74,26 @@ CITY_ID="1234567"  # Your city ID
 API_KEY="your_key"  # Your API key
 ```
 
-### Step 5: Update Paths
+### Step 5: Update Paths in user_modules.ini
+Open `user_modules.ini` in a text editor and edit:
 
-Edit user_modules.ini - change ~/YourPath/ to your path.
+| Line | Edit This | Change To |
+|------|-----------|----------|
+| 4 | `exec = ~/your_path/weather.sh` | (adjust path if different) |
 
-### Step 6: Add to Bar
+### Step 6: Enable Module in your config
+Open your polybar config file:
+
+1. Add include:
+```ini
+include-file = ~/your_path/user_modules.ini
+```
+
+2. Add to bar:
+```ini
+[bar/top]
+modules-right = weather #( eg, modules-right/center/left = weather secondsbar )
+```
 
 ---
 
