@@ -9,7 +9,15 @@
 
 ![Weather Module](Screenshots/5.png)
 
+<p align="center">
+<img src="Screenshots/6.png" width="45%">
+<img src="Screenshots/7.png" width="45%">
+</p>
+
+![Weather Module](Screenshots/8.png)
+
 This package provides an enhanced weather module for Linux desktop.
+
 
 ## Files Included
 
